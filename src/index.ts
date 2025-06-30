@@ -1,29 +1,32 @@
 #!/usr/bin/env node
 
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
-} from "@modelcontextprotocol/sdk/types.js";
-import NodeNotifier from "node-notifier";
-import * as os from "os";
-import * as path from "path";
+} from '@modelcontextprotocol/sdk/types.js';
+import NodeNotifier from 'node-notifier';
+import * as os from 'os';
+import * as path from 'path';
 
 // 获取当前工作目录的项目名称
 const getCurrentProjectName = (): string => {
   try {
     const workingDir = process.cwd();
     const projectName = path.basename(workingDir);
-    return projectName || "Unknown Project";
-  } catch (error) {
-    return "Unknown Project";
+    return projectName || 'Unknown Project';
+  } catch {
+    return 'Unknown Project';
   }
 };
 
 // 格式化通知标题
-const formatNotificationTitle = (title: string, projectName: string): string => {
-  if (!projectName || projectName === "Unknown Project") {
+const formatNotificationTitle = (
+  title: string,
+  projectName: string
+): string => {
+  if (!projectName || projectName === 'Unknown Project') {
     return title;
   }
   return `${title} [${projectName}]`;
@@ -35,7 +38,7 @@ const getNotificationIcon = (): string => {
   // macOS: 建议 128x128px (最小 64x64px，最大 256x256px)
   // Windows: 建议 256x256px (最小 32x32px，最大 512x512px)
   // Linux: 建议 128x128px (最小 32x32px)
-  const iconPath = path.join(__dirname, "..", "assets", "icon.png");
+  const iconPath = path.join(__dirname, '..', 'assets', 'icon.png');
   return iconPath;
 };
 
@@ -68,7 +71,7 @@ const createNotificationService = (): NotificationService => {
         try {
           const platform = os.platform();
           const iconPath = getNotificationIcon();
-          
+
           const finalOptions: NotificationOptions = {
             ...options,
             wait: false,
@@ -77,15 +80,15 @@ const createNotificationService = (): NotificationService => {
 
           // 根据平台配置声音和图标
           if (options.sound) {
-            if (platform === "darwin") {
-              finalOptions.sound = "Ping";
+            if (platform === 'darwin') {
+              finalOptions.sound = 'Ping';
               // 在 macOS 上使用 contentImage 显示图标
               finalOptions.contentImage = iconPath;
-            } else if (platform === "win32") {
+            } else if (platform === 'win32') {
               finalOptions.sound = true;
               finalOptions.icon = iconPath;
-            } else if (platform === "linux") {
-              finalOptions.urgency = "normal";
+            } else if (platform === 'linux') {
+              finalOptions.urgency = 'normal';
               finalOptions.icon = iconPath;
             }
           }
@@ -93,7 +96,7 @@ const createNotificationService = (): NotificationService => {
           // 调用通知
           notifier.notify(finalOptions, (error: Error | null) => {
             if (error) {
-              console.error("通知发送失败:", error);
+              console.error('通知发送失败:', error);
               // 尝试使用备用方案
               try {
                 console.log(`[${options.title}] ${options.message}`);
@@ -106,7 +109,7 @@ const createNotificationService = (): NotificationService => {
             }
           });
         } catch (err) {
-          console.error("通知服务错误:", err);
+          console.error('通知服务错误:', err);
           reject(err);
         }
       });
@@ -120,8 +123,8 @@ const notificationService = createNotificationService();
 // 创建服务器实例
 const server = new Server(
   {
-    name: "ai-notify-mcp",
-    version: "1.0.0",
+    name: 'ai-notify-mcp',
+    version: '1.0.0',
   },
   {
     capabilities: {
@@ -135,39 +138,39 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
       {
-        name: "show_completion_notification",
-        description: "Show a system notification when AI completes a response",
+        name: 'show_completion_notification',
+        description: 'Show a system notification when AI completes a response',
         inputSchema: {
-          type: "object",
+          type: 'object',
           properties: {
             title: {
-              type: "string",
-              description: "Notification title",
-              default: "AI Assistant",
+              type: 'string',
+              description: 'Notification title',
+              default: 'AI Assistant',
             },
             message: {
-              type: "string",
-              description: "Notification message",
-              default: "已完成回答",
+              type: 'string',
+              description: 'Notification message',
+              default: '已完成回答',
             },
             sound: {
-              type: "boolean",
-              description: "Play notification sound",
+              type: 'boolean',
+              description: 'Play notification sound',
               default: true,
             },
           },
         },
       },
       {
-        name: "auto_notify_completion",
+        name: 'auto_notify_completion',
         description:
-          "Automatically show completion notification (call this after providing any response)",
+          'Automatically show completion notification (call this after providing any response)',
         inputSchema: {
-          type: "object",
+          type: 'object',
           properties: {
             responseLength: {
-              type: "number",
-              description: "Length of the response (optional)",
+              type: 'number',
+              description: 'Length of the response (optional)',
               default: 0,
             },
           },
@@ -185,10 +188,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   try {
     switch (name) {
-      case "show_completion_notification": {
-        const title = args?.title as string || "AI Assistant";
-        const message = args?.message as string || "已完成回答";
-        const sound = args?.sound as boolean ?? true;
+      case 'show_completion_notification': {
+        const title = (args?.title as string) || 'AI Assistant';
+        const message = (args?.message as string) || '已完成回答';
+        const sound = (args?.sound as boolean) ?? true;
 
         await notificationService.notify({
           title: formatNotificationTitle(title, projectName),
@@ -200,29 +203,29 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: `✅ 系统通知已发送: "${message}"`,
             },
           ],
         };
       }
 
-      case "auto_notify_completion": {
+      case 'auto_notify_completion': {
         const responseLength = (args?.responseLength as number) || 0;
-        let autoMessage = "已完成回答";
+        let autoMessage = '已完成回答';
 
         if (responseLength > 0) {
           if (responseLength > 1000) {
-            autoMessage = "已完成详细回答";
+            autoMessage = '已完成详细回答';
           } else if (responseLength > 500) {
-            autoMessage = "已完成回答";
+            autoMessage = '已完成回答';
           } else {
-            autoMessage = "已完成简短回答";
+            autoMessage = '已完成简短回答';
           }
         }
 
         await notificationService.notify({
-          title: formatNotificationTitle("AI Notify", projectName),
+          title: formatNotificationTitle('AI Notify', projectName),
           message: autoMessage,
           sound: true,
           icon: iconPath,
@@ -231,7 +234,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: `🔔 自动通知已发送`,
             },
           ],
@@ -242,11 +245,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         throw new Error(`Unknown tool: ${name}`);
     }
   } catch (error) {
-    console.error("工具调用错误:", error);
+    console.error('工具调用错误:', error);
     return {
       content: [
         {
-          type: "text",
+          type: 'text',
           text: `Error: ${error instanceof Error ? error.message : String(error)}`,
         },
       ],
@@ -257,5 +260,5 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 // 启动服务器
 const transport = new StdioServerTransport();
 server.connect(transport).catch((error) => {
-  console.error("服务器连接错误:", error);
+  console.error('服务器连接错误:', error);
 });

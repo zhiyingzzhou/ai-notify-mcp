@@ -461,7 +461,6 @@ git push origin feature/amazing-feature
 | 渠道 | 链接 | 适用场景 |
 |------|------|----------|
 | 🐛 **GitHub Issues** | [提交问题](https://github.com/zhiyingzzhou/ai-notify-mcp/issues) | Bug 报告和功能请求 |
-| 💬 **GitHub Discussions** | [参与讨论](https://github.com/zhiyingzzhou/ai-notify-mcp/discussions) | 使用交流和技术讨论 |
 | 📧 **邮件联系** | zhiyingzzhou@gmail.com | 直接联系项目维护者 |
 
 ### 💌 联系我们
