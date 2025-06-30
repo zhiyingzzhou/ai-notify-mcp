@@ -1,0 +1,30 @@
+{
+  "name": "ai-notify-mcp",
+  "version": "1.0.0",
+  "description": "一个为支持 MCP 协议的代码编辑器设计的 AI 通知服务器，当 AI 完成回答时自动发送系统通知，提升使用体验",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts"
+  },
+  "keywords": [
+    "mcp",
+    "vscode",
+    "cursor",
+    "trae",
+    "notification"
+  ],
+  "author": "zhiyingzhou",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.13.2",
+    "node-notifier": "^10.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/node-notifier": "^8.0.2",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
+  }
+}
