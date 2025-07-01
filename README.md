@@ -103,7 +103,7 @@ npm run build
 在 `Cursor Settings` → `Rules` → `User Rules` 中添加：
 
 ```
-It is important to always call the ai-notify MCP tool before calling any other MCP tools when completing a user request.
+When responding to user requests, use the ai-notify MCP tool (auto_notify_completion) only as the final step after you have fully completed your answer. Never call this tool during thinking phases, tool calls, or before your answer is complete. The notification should only be triggered when the entire response is ready for the user.
 ```
 
 #### 5️⃣ **开启 Auto-Run 模式**
